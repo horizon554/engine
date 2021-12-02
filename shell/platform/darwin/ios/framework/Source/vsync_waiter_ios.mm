@@ -55,6 +55,10 @@ void VsyncWaiterIOS::AwaitVSync() {
     display_link_ = fml::scoped_nsobject<CADisplayLink> {
       [[CADisplayLink displayLinkWithTarget:self selector:@selector(onDisplayLink:)] retain]
     };
+      
+      if (@available(iOS 15.0, *)) {
+          display_link_.get().preferredFrameRateRange = CAFrameRateRangeMake(60, 120, 120);
+      }
     display_link_.get().paused = YES;
 
     task_runner->PostTask([client = [self retain]]() {
